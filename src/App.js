@@ -6,18 +6,24 @@ import Header from "./components/Header";
 import TodoList from "./components/TodoList";
 import { store } from "./store";
 
-function App() {
+function AppContent() {
   return (
     <div className="App">
-      <Provider store={store}>
-        <Routes>
-          <Route path="/" element={<Auth />} />
-          <Route path="/header" element={<Header />}>
-            <Route path="todolist" element={<TodoList />} />
-          </Route>
-        </Routes>
-      </Provider>
+      <Routes>
+        <Route path="/" element={<Auth />} />
+        <Route path="/header" element={<Header />}>
+          <Route path="todolist" element={<TodoList />} />
+        </Route>
+      </Routes>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Provider store={store}>
+      <AppContent />
+    </Provider>
   );
 }
 

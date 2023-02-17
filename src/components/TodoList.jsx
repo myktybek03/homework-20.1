@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { TODOACTIONS } from "../store/todo/todoReducer";
+import { todoActions } from "../store/todo/todoSlice";
 const TodoList = () => {
   const [todo, setTodo] = useState("");
   const [editValue, setEditValue] = useState("");
@@ -24,18 +24,17 @@ const TodoList = () => {
       completed: false,
     };
     setTodo("");
-    dispatch({ type: TODOACTIONS.ADD_TODO, payload: todoObj });
+    dispatch(todoActions.addTodo(todoObj));
   };
   const todos = useSelector((state) => state.todo);
-
   const removeTodoHandler = (id) => {
-    dispatch({ type: TODOACTIONS.REMOVE_TODO, payload: id });
+    dispatch(todoActions.delete(id));
   };
   const deleteAllHandler = () => {
-    dispatch({ type: TODOACTIONS.DELETE_ALL });
+    dispatch(todoActions.deleteAll());
   };
   const handleCheckBox = (id) => {
-    dispatch({ type: TODOACTIONS.COMPLETE, payload: id });
+    dispatch(todoActions.completeTodo(id));
   };
 
   const handleEditClick = (todo) => {
@@ -57,7 +56,7 @@ const TodoList = () => {
       todo: editValue,
       completed: false,
     };
-    dispatch({ type: TODOACTIONS.EDIT_TODO, payload: editedObj });
+    dispatch(todoActions.editTodo(editedObj));
     setEditFormVisibility(null);
   };
   return (

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { authActionTypes } from "../store/auth/authReducer";
+import { authActions } from "../store/auth/authSlice";
 
 const Auth = () => {
   const dispatch = useDispatch();
@@ -25,10 +25,7 @@ const Auth = () => {
       formState.password === "123123"
     ) {
       navigate("/header/todolist");
-      dispatch({
-        type: authActionTypes.LOG_IN,
-        payload: formState.email,
-      });
+      dispatch(authActions.login(formState.email));
     }
     setState({
       email: "",
