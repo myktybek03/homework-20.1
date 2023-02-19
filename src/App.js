@@ -1,22 +1,20 @@
-import { Provider } from "react-redux";
-import { Route, Routes } from "react-router";
-import "./App.css";
-import Auth from "./components/Auth";
-import Header from "./components/Header";
-import TodoList from "./components/TodoList";
-import { store } from "./store";
+import { Provider } from "react-redux"
+import { Navigate, Route, Routes } from "react-router"
+import AuthPage from "./page/auth/AuthPage"
+import TodoPage from "./page/todo/TodoPage"
+import { store } from "./store"
+import "./App.css"
 
 function AppContent() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Auth />} />
-        <Route path="/header" element={<Header />}>
-          <Route path="todolist" element={<TodoList />} />
-        </Route>
+        <Route path="/login" element={<AuthPage />} />
+        <Route path="/todos" element={<TodoPage />} />
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </div>
-  );
+  )
 }
 
 function App() {
@@ -24,7 +22,7 @@ function App() {
     <Provider store={store}>
       <AppContent />
     </Provider>
-  );
+  )
 }
 
-export default App;
+export default App

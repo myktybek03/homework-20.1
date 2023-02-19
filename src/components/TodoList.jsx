@@ -1,220 +1,57 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components";
-import { todoActions } from "../store/todo/todoSlice";
-const TodoList = () => {
-  const [todo, setTodo] = useState("");
-  const [editValue, setEditValue] = useState("");
-  const [editTodo, setEditeTodo] = useState();
-  const [editFormVisibility, setEditFormVisibility] = useState(0);
+import React, { useState } from "react"
+import { useDispatch } from "react-redux"
+import { completeTodo, deleteTodo, editTodo } from "../store/todo/todoSlice"
+import styled from "styled-components"
 
-  const enebled = todo.trim().length > 0;
-  const dispatch = useDispatch();
+const TodoList = ({ item }) => {
+  const dispatch = useDispatch()
 
-  const inputChangeHandler = (e) => {
-    setTodo(e.target.value);
-  };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    let date = new Date();
-    let time = date.getTime();
-    let todoObj = {
-      id: time,
-      todo: todo,
-      completed: false,
-    };
-    setTodo("");
-    dispatch(todoActions.addTodo(todoObj));
-  };
-  const todos = useSelector((state) => state.todo);
-  const removeTodoHandler = (id) => {
-    dispatch(todoActions.delete(id));
-  };
-  const deleteAllHandler = () => {
-    dispatch(todoActions.deleteAll());
-  };
-  const handleCheckBox = (id) => {
-    dispatch(todoActions.completeTodo(id));
-  };
+  const [editValue, setEditValue] = useState("")
+  const [edit, setEdit] = useState(false)
 
-  const handleEditClick = (todo) => {
-    setEditFormVisibility(todo.id);
-    setEditeTodo(todo);
-    setEditValue(todo.todo);
-  };
-  const editINputChangeHandler = (e) => {
-    setEditValue(e.target.value);
-  };
-  const cancelUpdate = () => {
-    setEditFormVisibility(null);
-  };
+  const removeHadnler = () => {
+    dispatch(deleteTodo(item.id))
+  }
 
-  const editSubmit = (e) => {
-    e.preventDefault();
-    let editedObj = {
-      id: editTodo.id,
-      todo: editValue,
-      completed: false,
-    };
-    dispatch(todoActions.editTodo(editedObj));
-    setEditFormVisibility(null);
-  };
+  const toggleTodo = () => {
+    dispatch(completeTodo(item.id))
+  }
+  const saveTodoHandler = () => {
+    dispatch(editTodo({ id: item.id, title: editValue }))
+    setEdit(false)
+  }
+  const editHandler = () => {
+    setEdit(true)
+    setEditValue(item.title)
+  }
+
   return (
-    <Container>
-      <h1>TODO APP</h1>
-      <div>
-        <StyledInput
-          value={todo}
-          type="text"
-          placeholder="Write your task....."
-          onChange={inputChangeHandler}
-        />
-        <Button onClick={handleSubmit} disabled={!enebled}>
-          ADD TODO
-        </Button>
-        <Button3 onClick={deleteAllHandler}>Delete All</Button3>
-      </div>
+    <div>
+      <li>
+        {edit ? (
+          <>
+            <input
+              type="text"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+            />
+            <button onClick={saveTodoHandler}>save</button>
+          </>
+        ) : (
+          <>
+            <StyledTitle done={item.completed}>{item.title}</StyledTitle>
+            <button onClick={removeHadnler}>delete</button>
+            <button onClick={toggleTodo}>complete</button>
+            <button onClick={editHandler}>edit</button>
+          </>
+        )}
+      </li>
+    </div>
+  )
+}
 
-      {todos.map((item, index) => (
-        <StyledUl key={index}>
-          <li>
-            <CheckBox
-              type="checkbox"
-              checked={item.completed}
-              onChange={() => handleCheckBox(item.id)}
-            ></CheckBox>
-            {item.id === editFormVisibility ? (
-              <div>
-                <EditeInput
-                  type="text"
-                  value={editValue || ""}
-                  onChange={editINputChangeHandler}
-                />
-              </div>
-            ) : (
-              <div>
-                <p
-                  style={
-                    item.completed === true
-                      ? { textDecoration: "line-through" }
-                      : { textDecoration: "none" }
-                  }
-                >
-                  {item.todo}
-                </p>
-              </div>
-            )}
+export default TodoList
 
-            <div>
-              {item.id === editFormVisibility ? (
-                <Button2 onClick={editSubmit}>Save</Button2>
-              ) : null}
-
-              {item.id === editFormVisibility ? (
-                <Button3 onClick={cancelUpdate}>Cancel</Button3>
-              ) : (
-                <Button2 onClick={() => handleEditClick(item)}>Edit</Button2>
-              )}
-              <Button onClick={() => removeTodoHandler(item.id)}>Delete</Button>
-            </div>
-          </li>
-        </StyledUl>
-      ))}
-    </Container>
-  );
-};
-
-export default TodoList;
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 1000px;
-  align-self: center;
-  h1 {
-    color: aliceblue;
-    font-size: 40px;
-    font-weight: 900;
-  }
-`;
-const EditeInput = styled.input`
-  width: 300px;
-  border: none;
-  padding: 10px;
-  outline: none;
-  color: #0e0d0d;
-  font-size: 30px;
-`;
-const StyledInput = styled.input`
-  width: 300px;
-  padding: 10px;
-  color: #141515;
-  border-radius: 10px;
-  margin-bottom: 20px;
-`;
-const Button = styled.button`
-  padding: 10px;
-  font-size: 20px;
-  border: 5px;
-  background-color: #ac0395;
-  color: aliceblue;
-  border-radius: 10px;
-  margin-left: 20px;
-  :hover {
-    background-color: #fa03d9;
-  }
-  :disabled {
-    opacity: 70%;
-  }
-`;
-const StyledUl = styled.ul`
-  border: 2px solid white;
-  width: 100%;
-  margin-top: 30px;
-  padding: 20px;
-  border-radius: 10px;
-  background-color: #06855b;
-  li {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: white;
-    font-size: 30px;
-    font-weight: 900;
-  }
-  p {
-    max-width: 400px;
-    margin: 0;
-  }
-`;
-
-const Button2 = styled.button`
-  padding: 10px;
-  font-size: 20px;
-  border: 5px;
-  background-color: #1b145e;
-  color: aliceblue;
-  border-radius: 10px;
-  :hover {
-    background-color: #1320dc;
-  }
-`;
-const Button3 = styled.button`
-  padding: 10px;
-  font-size: 20px;
-  border: 5px;
-  background-color: #640605;
-  color: aliceblue;
-  border-radius: 10px;
-  margin-left: 40px;
-  :hover {
-    background-color: #d20606;
-  }
-`;
-
-const CheckBox = styled.input`
-  width: 50px;
-  height: 50px;
-  padding: 10px;
-`;
+const StyledTitle = styled.p`
+  text-decoration: ${(props) => (props.done ? "line-through" : "")};
+`

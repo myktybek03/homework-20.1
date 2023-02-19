@@ -1,8 +1,8 @@
 {
-  "homepage": "https://yryskeldi0101.github.io/Home-Work-20_Part-2",
   "name": "lesson-18.2",
   "version": "0.1.0",
   "private": true,
+  "homepage": "",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.2",
     "@testing-library/jest-dom": "^5.16.5",

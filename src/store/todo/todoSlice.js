@@ -1,50 +1,33 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit"
 
 export const todoSlice = createSlice({
   name: "todo",
-  initialState: [
-    { id: 1, todo: "Buy Laptop", completed: false },
-    { id: 2, todo: "Buy apple", completed: false },
-    { id: 3, todo: "Buy pinapple", completed: false },
-  ],
+  initialState: [],
   reducers: {
     addTodo(state, action) {
-      state.push(action.payload);
+      state.push(action.payload)
     },
-    deleteAll(state) {
-      state.splice(0, state.length);
+
+    deleteTodo(state, action) {
+      return state.filter((item) => item.id !== action.payload)
     },
-    delete(state, action) {
-      const filteredTodos = state.filter((todo) => {
-        return todo.id !== action.payload;
-      });
-      return filteredTodos;
+
+    completeTodo(state, action) {
+      const todo = state.find((todo) => todo.id === action.payload)
+      todo.completed = !todo.completed
     },
 
     editTodo(state, action) {
-      let data = action.payload;
-      const updatedArray = [];
-      state.map((item) => {
-        if (item.id === data.id) {
-          item.id = data.id;
-          item.todo = data.todo;
-          item.completed = data.completed;
-        }
-        return (state = updatedArray.push(item));
-      });
+      const todo = state.find((todo) => todo.id === action.payload.id)
+      todo.title = action.payload.title
     },
-    completeTodo(state, action) {
-      let todoArray = [];
-      state.map((item) => {
-        if (item.id === action.payload) {
-          item.completed = !item.completed;
-        }
-        return (state = todoArray.push(item));
-      });
+    deleteAll() {
+      return []
     },
   },
-});
+})
 
-export const todoActions = todoSlice.actions;
+export const todoReducer = todoSlice.reducer
 
-export default todoSlice.reducer;
+export const { addTodo, deleteTodo, completeTodo, editTodo, deleteAll } =
+  todoSlice.actions
